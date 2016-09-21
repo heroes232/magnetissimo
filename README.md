@@ -1,72 +1,55 @@
-# Work in progress, but so nearly there!
+# Magnetissimo
 
-- Crawler is working and performing really well. 13000 torrents added per minute.
-- Tests are written.
-- Search is functional and super fast.
+Web application that indexes all popular torrent sites, and saves it to the local database.
 
-We need:
+![alt tag](http://i.imgur.com/meqeZrc.png)
 
-- Run a performance load test
-- Write usage documentation
+Goals:
 
-![alt tag](http://i.imgur.com/LzzWlk0.png)
+* Crawl multiple index sites for torrents and magnet links.
+* Run without ceremony. No pointless configuration needed.
+* High performance, leveraging Elixir's GenServer and Erlang's BEAM VM.
+* Unit tested for correctness.
 
-# Run it locally
+# Community
 
-You need a few things locally for the project to run:
+Want to talk about Magnetissimo or suggest features? We have an official subreddit!
 
-  * Elixir (At least version 1.3)
-  * Erlang
-  * PostgreSQL
-  * Redis
-  * Node
+[http://reddit.com/r/magnetissimo](http://reddit.com/r/magnetissimo)
 
-To start Magnetissimo locally:
+# Parser List
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Install Node.js dependencies with `npm install`
-  * Start Phoenix endpoint with `mix phoenix.server`
-  * Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Magnetissimo currently fetches torrents from the following sites:
 
-# Run it on Heroku
+- [x] EZTV (thanks to @agustif)
+- [x] Demonoid
+- [x] Isohunt
+- [x] LimeTorrents
+- [x] ThePirateBay
+- [x] TorrentDownloads
+- [x] 1337x
+- [ ] https://torrentproject.se
+- [ ] https://rarbg.to/torrents.php
+- [ ] https://www.torlock.com/
+- [ ] http://www.seedpeer.eu/
+- [ ] http://sectorrent.com/
+- [ ] http://www.torrenthound.com/
+- [ ] http://piratepublic.com
+- [ ] bitsnoop.com
+- [ ] extratorrent.cc
+- [ ] linuxtracker.org
+- [ ] monova.org
+- [ ] newtorrents.info
+- [ ] torrentbit.net
+- [ ] torrentfunk.com
+- [ ] torrentreactor.com
+- [ ] torrents.net
+- [ ] yourbittorrent.com
 
-To run it on Heroku, you need to:
+# Usage Guide
 
-Create the Heroku application using the Elixir build pack.
+Please check the Wiki pages for instructions on how to run Magnetissimo.
 
-```
-$ heroku create --buildpack "https://github.com/HashNuke/heroku-buildpack-elixir.git"
-Creating mysterious-meadow-6277... done, stack is cedar-14
-Buildpack set. Next release on mysterious-meadow-6277 will use https://github.com/HashNuke/heroku-buildpack-elixir.git.
-https://mysterious-meadow-6277.herokuapp.com/ | https://git.heroku.com/mysterious-meadow-6277.git
-Git remote heroku added
-```
-
-Add the Phoenix static buildpack to the same Heroku project.
-
-```
-$ heroku buildpacks:add https://github.com/gjaldon/heroku-buildpack-phoenix-static.git
-```
-
-Add the following environment variables:
-
-```
-POOL_SIZE=18
-DATABASE_URL=foobarbaz
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-$ mix phoenix.gen.secret
-xvafzY4y01jYuzLm3ecJqo008dVnU3CN4f+MamNd1Zue4pXvfvUjbiXT8akaIF53
-SECRET_KEY_BASE=xvafzY4y01jYuzLm3ecJqo008dVnU3CN4f+MamNd1Zue4pXvfvUjbiXT8akaIF53
-```
-
-# How it works
-
-Magnetissimo is automatically configured to start crawling torrent sites
-as soon as it's started. You should see torrents being added at a very high rate
-and visible on the sites home page.
-
-Just visit http://localhost:4000 to see all the torrents indexed so far.
-
-No configuration need on your end.
+* [Running it locally](https://github.com/sergiotapia/magnetissimo/wiki/Usage:-Local)
+* [Running it on Heroku](https://github.com/sergiotapia/magnetissimo/wiki/Usage:-Heroku)
+* Running it on a VPS (to-do)

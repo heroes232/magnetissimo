@@ -18,7 +18,7 @@ defmodule Magnetissimo.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Magnetissimo, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
+     applications: [:gen_stage, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :httpoison, :exq, :tzdata]]
   end
 
@@ -40,13 +40,16 @@ defmodule Magnetissimo.Mixfile do
      {:cowboy, "~> 1.0"},
      {:httpoison, "~> 0.9.0"},
      {:floki, "~> 0.9.0"},
-     {:html_entities, "~> 0.3.0"},
      {:elixilorem, "~> 0.0.1"},
      {:scrivener_ecto, "~> 1.0"},
      {:scrivener_html, "~> 1.1"},
      {:timex, "~> 2.0"},
      {:exq, "~> 0.7.2"},
-     {:exq_ui, "~> 0.7.0"}]
+     {:exq_ui, "~> 0.7.0"},
+     {:html_entities, "~> 0.3"},
+     {:gen_stage, "~> 0.4"},
+     {:mariaex, ">= 0.0.0"},
+     {:magnet, ">= 0.0.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

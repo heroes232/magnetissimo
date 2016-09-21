@@ -6,12 +6,14 @@ defmodule Magnetissimo.Torrent do
   require Logger
 
   schema "torrents" do
+    field :infohash, :string
     field :name, :string
     field :magnet, :string
     field :leechers, :integer
     field :seeders, :integer
     field :source, :string
     field :filesize, :string
+    field :crawled_at, Ecto.DateTime
 
     timestamps()
   end
@@ -21,9 +23,9 @@ defmodule Magnetissimo.Torrent do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :magnet, :leechers, :seeders, :source, :filesize])
-    |> validate_required([:name, :magnet, :source])
-    |> unique_constraint(:magnet)
+    |> cast(params, [:infohash, :name, :magnet, :leechers, :seeders, :source, :filesize])
+    |> validate_required([:infohash, :name, :magnet, :source])
+#    |> unique_constraint(:infohash)
   end
 
   def order_by_name(query) do
@@ -47,10 +49,16 @@ defmodule Magnetissimo.Torrent do
   end
 
   def save_torrent(torrent) do
+    Logger.info "Got new torrent!!!! #{torrent.magnet}"
+    magnet_decoded = Magnet.decode(torrent.magnet) |> Enum.into(%Magnet{})
+    infohash = magnet_decoded.info_hash
+    Logger.info "MAGNET DECODE #{infohash}"
+
     changeset = Torrent.changeset(%Torrent{}, torrent)
     case Repo.insert(changeset) do
       {:ok, _torrent} ->
         Logger.info "★★★ - Torrent saved to database: #{torrent.name}"
+
       {:error, changeset} ->
         Logger.error "Couldn't save: #{torrent.name}"
         IO.inspect changeset.errors

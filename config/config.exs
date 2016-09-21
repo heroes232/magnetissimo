@@ -31,11 +31,13 @@ config :exq,
   port: String.to_integer(System.get_env("REDIS_PORT") || "6379"),
   namespace: "exq",
   queues: [
-    {"thepiratebay", 15},
-    {"demonoid", 15}, 
-    {"isohunt", 15},
-    {"limetorrents", 15},
-    {"torrentdownloads", 15}
+    {"eztv", 25},
+    {"thepiratebay", 25},
+    {"demonoid", 25}, 
+    {"isohunt", 25},
+    {"limetorrents", 25},
+    {"torrentdownloads", 25},
+    {"leetx", 25},
   ]
 
 # Configure exq_ui

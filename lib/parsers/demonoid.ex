@@ -7,11 +7,6 @@ defmodule Magnetissimo.Parsers.Demonoid do
     ]
   end
 
-  def download_url(url) do
-    response = HTTPoison.get(url)
-    response.body
-  end
-
   def paginated_links(_) do
     1..200
     |> Enum.map(fn i -> "https://www.demonoid.ooo/files/?to=0&uid=0&category=0&subcategory=0&language=0&seeded=2&quality=0&external=2&query=&sort=&page=#{i}" end)
@@ -32,6 +27,7 @@ defmodule Magnetissimo.Parsers.Demonoid do
       |> String.replace("Details for ", "")
       |> String.replace("Download this torrentExtra informationCommentsDMCA", "")
       |> String.trim
+      |> HtmlEntities.decode
 
     description = html_body
       |> Floki.find("span.adbriteinline")

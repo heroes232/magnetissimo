@@ -33,9 +33,11 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-# Configure your database
 config :magnetissimo, Magnetissimo.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  database: "magnetissimo_dev",
-  hostname: "localhost",
-  pool_size: 10
+adapter: Ecto.Adapters.Postgres,
+#adapter: Ecto.Adapters.MySQL,
+database: "torrents",
+username: "torrent",
+password: "password123",
+hostname: "localhost",
+pool_size: 1
