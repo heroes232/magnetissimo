@@ -9,7 +9,6 @@ defmodule Magnetissimo.Repo.Migrations.CreateTorrent do
       add :leechers, :integer
       add :seeders, :integer
       add :source, :text
-      add :crawled_at, :datetime
 
       timestamps()
     end

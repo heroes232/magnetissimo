@@ -36,7 +36,7 @@ config :logger, level: :error
 
 config :magnetissimo, Magnetissimo.Repo,
 adapter: Ecto.Adapters.Postgres,
-database: "torrents",
+database: "torrent",
 username: "torrent",
 password: "password123",
 hostname: "localhost",
