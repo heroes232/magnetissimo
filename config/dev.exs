@@ -36,9 +36,16 @@ config :logger, level: :error
 
 config :magnetissimo, Magnetissimo.Repo,
 adapter: Ecto.Adapters.Postgres,
-#adapter: Ecto.Adapters.MySQL,
 database: "torrents",
 username: "torrent",
 password: "password123",
 hostname: "localhost",
-pool_size: 1
+pool_size: 20
+
+#config :magnetissimo, Magnetissimo.Repo,
+#adapter: Ecto.Adapters.MySQL,
+#database: "torrents",
+#username: "root",
+#password: "password123",
+#hostname: "104.155.98.38",
+#pool_size: 1
