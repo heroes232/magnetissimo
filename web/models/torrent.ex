@@ -14,6 +14,8 @@ defmodule Magnetissimo.Torrent do
     field :source, :string
     field :filesize, :string
     field :crawled_at, Ecto.DateTime
+    field :category, :string
+    field :subcategory, :string
 
     timestamps()
   end
@@ -23,7 +25,7 @@ defmodule Magnetissimo.Torrent do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:infohash, :name, :magnet, :leechers, :seeders, :source, :filesize])
+    |> cast(params, [:infohash, :name, :magnet, :leechers, :seeders, :source, :filesize, :category, :subcategory])
     |> validate_required([:infohash, :name, :magnet, :source])
     |> unique_constraint(:infohash)
   end

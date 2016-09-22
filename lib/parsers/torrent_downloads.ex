@@ -3,7 +3,7 @@ defmodule Magnetissimo.Parsers.TorrentDownloads do
 
   def root_urls do
     [
-      "https://www.torrentdownloads.me/category/8/TV+Shows",
+      # "https://www.torrentdownloads.me/category/8/TV+Shows",
       "https://www.torrentdownloads.me/category/419/Action",
       "https://www.torrentdownloads.me/category/29/Animation",
       "https://www.torrentdownloads.me/category/28/Adventure",
@@ -200,6 +200,10 @@ defmodule Magnetissimo.Parsers.TorrentDownloads do
       |> String.trim
       |> Integer.parse
 
+      category = html_body
+        |> Floki.find("h1.movies > span")
+        |> Floki.text
+
     %{
       name: name,
       description: description,
@@ -207,7 +211,8 @@ defmodule Magnetissimo.Parsers.TorrentDownloads do
       filesize: size,
       source: "TorrentDownloads",
       seeders: seeders,
-      leechers: leechers
+      leechers: leechers,
+      category: category
     }
   end
 end

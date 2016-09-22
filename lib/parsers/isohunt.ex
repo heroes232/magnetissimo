@@ -61,6 +61,11 @@ defmodule Magnetissimo.Parsers.Isohunt do
       |> Floki.text
       |> String.split
 
+    category = html_body
+      |> Floki.find("body > div.wrap > div > div > div.col-lg-10.col-md-10.col-sm-9.pb2.pt-h2 > div.p.mb-h2.p-h2.bg-white > ol > li")
+      |> Enum.at(1)
+      |> Floki.text
+
     size_value = Enum.at(attributes, 0) |> String.replace("Size", "") |> String.trim
     unit = Enum.at(attributes, 1)
     size = Magnetissimo.SizeConverter.size_to_bytes(size_value, unit) |> Kernel.to_string
@@ -73,7 +78,8 @@ defmodule Magnetissimo.Parsers.Isohunt do
       magnet: magnet,
       source: "Isohunt",
       filesize: size,
-      seeders: seeders
+      seeders: seeders,
+      category: category
     }
   end
 end

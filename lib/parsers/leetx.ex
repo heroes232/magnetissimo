@@ -76,8 +76,18 @@ defmodule Magnetissimo.Parsers.Leetx do
     {seeders, _} = html_body
       |> Floki.find(".green")
       |> Enum.at(0)
-      |> Floki.text  
+      |> Floki.text
       |> Integer.parse
+
+    category = html_body
+      |> Floki.find(".category-detail ul.list")
+      |> Enum.at(0)
+      |> Floki.find("li")
+      |> Enum.at(0)
+      |> Floki.find("span")
+      |> Floki.text
+      |> String.split
+
 
     %{
       name: name,
@@ -86,7 +96,8 @@ defmodule Magnetissimo.Parsers.Leetx do
       filesize: size,
       source: "1337x",
       seeders: seeders,
-      leechers: leechers
+      leechers: leechers,
+      category: category
     }
   end
 end

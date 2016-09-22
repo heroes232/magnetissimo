@@ -50,19 +50,22 @@ defmodule Magnetissimo.Parsers.EZTV do
       |> String.split("\n")
       |> Enum.at(0)
 
-    seeders = html_body
+    {seeders, _} = html_body
       |> Floki.find(".stat_red")
       |> Enum.at(0)
       |> Floki.text
       |> String.trim
+      |> Integer.parse
 
-    leechers = html_body
+    {leechers, _} = html_body
       |> Floki.find(".stat_green")
       |> Enum.at(0)
       |> Floki.text
-      |> String.trim    
+      |> String.trim
+      |> Integer.parse
 
     size = Magnetissimo.SizeConverter.size_to_bytes(size_value, unit) |> Kernel.to_string
+
 
     %{
       name: name,
@@ -70,7 +73,8 @@ defmodule Magnetissimo.Parsers.EZTV do
       source: "EZTV",
       filesize: size,
       seeders: seeders,
-      leechers: leechers
+      leechers: leechers,
+      category: "TV Show"
     }
   end
 end
