@@ -86,7 +86,7 @@ defmodule Magnetissimo.Parsers.Leetx do
       |> Enum.at(0)
       |> Floki.find("span")
       |> Floki.text
-      |> String.split
+      |> String.trim
 
 
     %{
