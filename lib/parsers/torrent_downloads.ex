@@ -203,6 +203,7 @@ defmodule Magnetissimo.Parsers.TorrentDownloads do
       category = html_body
         |> Floki.find("h1.movies > span")
         |> Floki.text
+        |> String.trim
 
     %{
       name: name,
