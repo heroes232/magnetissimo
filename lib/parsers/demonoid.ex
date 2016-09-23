@@ -3,13 +3,13 @@ defmodule Magnetissimo.Parsers.Demonoid do
 
   def root_urls do
     [
-      "https://www.demonoid.ooo/files/"
+      "http://www.demonoid.pw/files/"
     ]
   end
 
   def paginated_links(_) do
     1..200
-    |> Enum.map(fn i -> "https://www.demonoid.ooo/files/?to=0&uid=0&category=0&subcategory=0&language=0&seeded=2&quality=0&external=2&query=&sort=&page=#{i}" end)
+    |> Enum.map(fn i -> "http://www.demonoid.pw/files/?to=0&uid=0&category=0&subcategory=0&language=0&seeded=2&quality=0&external=2&query=&sort=&page=#{i}" end)
   end
 
   def torrent_links(html_body) do
@@ -17,7 +17,7 @@ defmodule Magnetissimo.Parsers.Demonoid do
     |> Floki.find("td.tone_1_pad a")
     |> Floki.attribute("href")
     |> Enum.filter(fn(a) -> String.contains?(a, "/files/details/") end)
-    |> Enum.map(fn(url) -> "https://www.demonoid.ooo" <> url end)
+    |> Enum.map(fn(url) -> "http://www.demonoid.pw" <> url end)
   end
 
   def scrape_torrent_information(html_body) do
@@ -55,6 +55,17 @@ defmodule Magnetissimo.Parsers.Demonoid do
     unit = Enum.at(size, 1)
     size = Magnetissimo.SizeConverter.size_to_bytes(size_value, unit) |> Kernel.to_string
 
+    categories = html_body
+      |> Floki.find(".ctable_content_no_pad > table > tr")
+      |> Enum.at(1)
+      |> Floki.find("td > b")
+      # |> Enum.at(0)
+      # |> Floki.find("#fslispc > table > tbody > tr > td > table:nth-child(3) > tbody > tr > td > table > tbody > tr:nth-child(2) > td > b:nth-child(1)")
+      # |> IO.inspect
+
+    category = categories |> Enum.at(0, "") |> Floki.text
+    subcategory = categories |> Enum.at(1, "") |> Floki.text
+
     %{
       name: name,
       description: description,
@@ -62,7 +73,9 @@ defmodule Magnetissimo.Parsers.Demonoid do
       filesize: size,
       source: "Demonoid",
       seeders: 0,
-      leechers: 0
+      leechers: 0,
+      category: category,
+      subcategory: subcategory
     }
   end
 end
