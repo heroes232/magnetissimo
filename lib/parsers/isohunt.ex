@@ -79,6 +79,7 @@ defmodule Magnetissimo.Parsers.Isohunt do
       source: "Isohunt",
       filesize: size,
       seeders: seeders,
+      leechers: 0,
       category: category
     }
   end
