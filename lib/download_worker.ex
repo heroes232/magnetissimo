@@ -48,7 +48,7 @@ defmodule Magnetissimo.DownloadWorker do
       {:ok, body} ->
         torrent = Magnetissimo.Parsers.EZTV.scrape_torrent_information(body)
         Logger.debug inspect torrent
-        #Torrent.save_torrent(torrent)
+        Torrent.save_torrent(torrent)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -89,7 +89,7 @@ defmodule Magnetissimo.DownloadWorker do
       {:ok, body} ->
         torrent = Magnetissimo.Parsers.Leetx.scrape_torrent_information(body)
         Logger.debug inspect torrent
-        #Torrent.save_torrent(torrent)
+        Torrent.save_torrent(torrent)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -130,7 +130,7 @@ defmodule Magnetissimo.DownloadWorker do
       {:ok, body} ->
         torrent = Magnetissimo.Parsers.ThePirateBay.scrape_torrent_information(body)
         Logger.debug inspect torrent
-        #Torrent.save_torrent(torrent)
+        Torrent.save_torrent(torrent)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -171,7 +171,7 @@ defmodule Magnetissimo.DownloadWorker do
       {:ok, body} ->
         torrent = Magnetissimo.Parsers.Demonoid.scrape_torrent_information(body)
         Logger.debug inspect torrent
-        #Torrent.save_torrent(torrent)
+        Torrent.save_torrent(torrent)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -212,7 +212,7 @@ defmodule Magnetissimo.DownloadWorker do
       {:ok, body} ->
         torrent = Magnetissimo.Parsers.Isohunt.scrape_torrent_information(body)
         Logger.debug inspect torrent
-        #Torrent.save_torrent(torrent)
+        Torrent.save_torrent(torrent)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -253,7 +253,7 @@ defmodule Magnetissimo.DownloadWorker do
       {:ok, body} ->
         torrent = Magnetissimo.Parsers.Limetorrents.scrape_torrent_information(body)
         Logger.debug inspect torrent
-        #Torrent.save_torrent(torrent)
+        Torrent.save_torrent(torrent)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -294,7 +294,7 @@ defmodule Magnetissimo.DownloadWorker do
       {:ok, body} ->
         torrent = Magnetissimo.Parsers.TorrentDownloads.scrape_torrent_information(body)
         Logger.debug inspect torrent
-        #Torrent.save_torrent(torrent)
+        Torrent.save_torrent(torrent)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
