@@ -8,6 +8,8 @@ defmodule Magnetissimo.DownloadWorker do
         {:ok, body}
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         {:error, 404}
+      {:ok, %HTTPoison.Response{status_code: 500}} ->
+        {:error, 500}
       {:error, %HTTPoison.Error{reason: _}} ->
         {:error, :other}
     end
