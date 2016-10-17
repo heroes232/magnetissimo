@@ -43,12 +43,12 @@ defmodule Magnetissimo.Parsers.EZTV do
 
     unit = html_body
       |> Floki.find("table")
-      |> Enum.at(8)
+      |> Enum.at(8, "")
       |> Floki.text
       |> String.split(" ")
-      |> Enum.at(7)
+      |> Enum.at(7, "")
       |> String.split("\n")
-      |> Enum.at(0)
+      |> Enum.at(0, "")
 
     {seeders, _} = html_body
       |> Floki.find(".stat_red")
