@@ -62,7 +62,7 @@ defmodule Magnetissimo.Torrent do
         Logger.info "★★★ - Torrent saved to database: #{torrent.name}"
 
       {:error, changeset} ->
-        Logger.error "Couldn't save: #{torrent.name}"
+        Logger.error "Couldn't save: #{torrent.name} reason:#{inspect changeset.errors}"
         IO.inspect changeset.errors
     end
   end
