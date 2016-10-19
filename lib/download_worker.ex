@@ -6,10 +6,8 @@ defmodule Magnetissimo.DownloadWorker do
     case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, body}
-      {:ok, %HTTPoison.Response{status_code: 404}} ->
-        {:error, 404}
-      {:ok, %HTTPoison.Response{status_code: 500}} ->
-        {:error, 500}
+      {:ok, %HTTPoison.Response{status_code: status}} ->
+        {:error, status}
       {:error, %HTTPoison.Error{reason: _}} ->
         {:error, :other}
     end
