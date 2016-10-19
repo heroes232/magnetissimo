@@ -19,7 +19,7 @@ defmodule Magnetissimo.Parsers.Isohunt do
     last_page_url = html_body
       |> Floki.find(".pagination .last a")
       |> Floki.attribute("href")
-      |> Enum.at(0)
+      |> Enum.at(0, "")
     last_page_url = "https://isohunt.to" <> last_page_url
     uri = URI.parse(last_page_url)
     query_params = URI.query_decoder(uri.query) |> Enum.to_list() |> Enum.into(%{})
