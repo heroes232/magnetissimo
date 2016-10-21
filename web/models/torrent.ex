@@ -50,33 +50,19 @@ defmodule Magnetissimo.Torrent do
     order_by: [desc: p.seeders]
   end
 
-  def save_torrent(%Torrent{magnet: "magnet:?xt=urn:btih:" <> _} = torrent) do
-    Logger.info "Got new torrent!!!! #{torrent.source} #{torrent.magnet}"
+  def save_torrent(torrent) do
+    magnet_position = :binary.match torrent.magnet, "magnet:?xt=urn:btih:"
+    infohash = String.slice(torrent.magnet, magnet_position |> elem(1), 40)
 
-    with {:ok, infohash} <- get_info_hash(torrent.magnet),
-    changeset <- Torrent.changeset(%Torrent{infohash: String.downcase(infohash)}, torrent),
-    do: process_save(Repo.insert(changeset))
+    changeset = Torrent.changeset(%Torrent{infohash: String.downcase(infohash)}, torrent)
+    case Repo.insert(changeset) do
+      {:ok, _torrent} ->
+        Logger.info "★★★ - Torrent saved to database: #{torrent.name}"
+      {:error, changeset} ->
+        Logger.error "Couldn't save: #{torrent.name}"
+        IO.inspect changeset.errors
+    end
+
   end
-
-  def save_torrent(_), do: {:error, :invalid}
-
-  def process_save({:ok, torrent}) do
-    Logger.info "★★★ - Torrent saved to database: #{torrent.name}"
-    :ok
-  end
-
-  def process_save({:error, changeset}) do
-      Logger.error "Couldn't save: #{inspect changeset} reason:#{inspect changeset.errors}"
-      :error
-  end
-
-  def get_info_hash("magnet:?xt" <> _ = magnet) do
-    decoded = URI.decode_query(magnet)
-    hash = Map.get(decoded, "magnet:?xt")
-    "urn:btih:"<> infohash = hash["magnet:?xt"]
-    {:ok, infohash}
-  end
-
-  def get_info_hash(_), do: {:error, :invalid}
 
 end

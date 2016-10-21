@@ -1,16 +1,14 @@
 defmodule Magnetissimo.SizeConverter do
+
+  def size_to_bytes(nil, _unit), do: :error
   def size_to_bytes(size, unit) do
     parse(Integer.parse(size), unit)
   end
 
   defp parse(:error, _), do: :error
 
-  defp parse({size_int, trailing}, unit) do
-    if String.length(trailing) > 0 do
-      :error
-    else
-      size_to_bytesp(size_int, unit)
-    end
+  defp parse({size_int, _trailing}, unit) do
+    size_to_bytesp(size_int, unit)
   end
 
   defp size_to_bytesp(size_int, "KB") do
