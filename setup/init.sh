@@ -8,7 +8,7 @@ wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && sudo 
 sudo apt-get update
 
 sudo apt-get install -y -f
-sudo apt-get install -y postgresql redis-server nodejs esl-erlang elixir git screen
+sudo apt-get install -y postgresql redis-server nodejs esl-erlang elixir git screen build-essential
 
 cd /vagrant/
 mix local.hex --force
