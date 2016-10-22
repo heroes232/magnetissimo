@@ -8,8 +8,8 @@ defmodule Magnetissimo.DownloadWorker do
         {:ok, body}
       {:ok, %HTTPoison.Response{status_code: status}} ->
         {:error, status}
-      {:error, %HTTPoison.Error{reason: _}} ->
-        {:error, :other}
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        {:error, reason}
     end
   end
 
@@ -98,8 +98,7 @@ defmodule Magnetissimo.DownloadWorker do
     Logger.debug "Crawling: #{url}"
     case download(url) do
       {:ok, body} ->
-        pages = Magnetissimo.Parsers.ThePirateBay.paginated_links(body)
-        pages
+        Magnetissimo.Parsers.ThePirateBay.paginated_links(body)
       |> Enum.each(fn url ->
         Exq.enqueue(Exq, "thepiratebay", "Magnetissimo.DownloadWorker", [url, "thepiratebay", "paginated_links"])
       end)
@@ -112,8 +111,7 @@ defmodule Magnetissimo.DownloadWorker do
     Logger.debug "Crawling: #{url}"
     case download(url) do
       {:ok, body} ->
-        torrent_links = Magnetissimo.Parsers.ThePirateBay.torrent_links(body)
-        torrent_links
+        Magnetissimo.Parsers.ThePirateBay.torrent_links(body)
       |> Enum.each(fn url ->
         Exq.enqueue(Exq, "thepiratebay", "Magnetissimo.DownloadWorker", [url, "thepiratebay", "torrent_links"])
       end)
