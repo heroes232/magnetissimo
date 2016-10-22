@@ -21,19 +21,26 @@ defmodule Magnetissimo.Parsers.Isohunt do
       |> Floki.attribute("href")
       |> Enum.at(0, "")
     last_page_url = "https://isohunt.to" <> last_page_url
-    uri = URI.parse(last_page_url)
-    case URI.query_decoder(uri.query) do
+    case URI.parse(last_page_url) do
       nil -> []
-      query_params ->
-        query_params_list = query_params |> Enum.to_list() |> Enum.into(%{})
-        {page, _} = Integer.parse(query_params_list["Torrent_page"])
-        total_pages = div(page, 40)
+      uri ->
+        if uri.query != nil do
+          case URI.query_decoder(uri.query) do
+            nil -> []
+            query_params ->
+              query_params_list = query_params |> Enum.to_list() |> Enum.into(%{})
+              {page, _} = Integer.parse(query_params_list["Torrent_page"])
+              total_pages = div(page, 40)
 
-        0..total_pages
-        |> Enum.map(fn i -> i * 40 end)
-        |> Enum.map(fn i ->
-          String.replace(last_page_url, "Torrent_page=#{page}", "Torrent_page=#{i}")
-    end)
+              0..total_pages
+              |> Enum.map(fn i -> i * 40 end)
+              |> Enum.map(fn i ->
+                String.replace(last_page_url, "Torrent_page=#{page}", "Torrent_page=#{i}")
+            end)
+          end
+        else
+          []
+        end
     end
   end
 
