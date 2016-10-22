@@ -26,4 +26,5 @@ defmodule Magnetissimo.SizeConverter do
   defp size_to_bytesp(size_int, "TB") do
     size_to_bytesp(size_int, "GB") * 1024
   end
+  defp size_to_bytesp(_size_int, _), do: :error
 end
