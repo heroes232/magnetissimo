@@ -2,7 +2,12 @@ defmodule Magnetissimo.DownloadWorker do
   alias Magnetissimo.Torrent
   require Logger
 
-  def download(url) do
+  def download("https://" <> _ = url), do: safe_download(url)
+  def download("http://" <> _ = url), do: safe_download(url)
+
+  def download(url), do: Logger.debug "Ignoring #{url}"
+
+  defp safe_download(url) do
     case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, body}
