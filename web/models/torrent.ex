@@ -58,9 +58,11 @@ defmodule Magnetissimo.Torrent do
   def save_torrent(%{filesize: "error"}=torrent), do: Logger.warn "Ignoring torrent:#{inspect torrent}"
 
   def save_torrent(%{magnet: ""}=torrent), do: Logger.warn "Ignoring torrent:#{inspect torrent}"
+
   def save_torrent(%{magnet: nil}=torrent), do: Logger.warn "Ignoring torrent:#{inspect torrent}"
 
   def save_torrent(torrent) do
+
     magnet_position = :binary.match torrent.magnet, "magnet:?xt=urn:btih:"
     infohash = String.slice(torrent.magnet, magnet_position |> elem(1), 40)
 
@@ -77,5 +79,6 @@ defmodule Magnetissimo.Torrent do
     end
 
   end
+
 
 end

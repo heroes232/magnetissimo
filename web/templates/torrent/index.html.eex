@@ -9,10 +9,12 @@
       <tr>
         <td>Name</td>
         <td class="size-header">Size</td>
-        <td>SE</td>
-        <td>LE</td>
-        <td>DL</td>
-        <td>Source</td>
+        <td> Created </td>
+        <td> Crawled </td>
+        <td> SE</td>
+        <td> LE</td>
+        <td> DL</td>
+        <td> Source</td>
       </tr>
     </thead>
     <tbody>
@@ -20,6 +22,8 @@
         <tr>
           <td><%= torrent.name %></td>
           <td class="meta size"><%= torrent.filesize %></td>
+          <td><%= torrent.inserted_at %></td>
+          <td><%= torrent.crawled_at %></td>
           <td class="meta seeds"><%= seeders(torrent.seeders) %></td>
           <td class="meta leeches"><%= leechers(torrent.leechers) %></td>
           <td>
