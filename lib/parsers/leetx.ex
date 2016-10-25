@@ -22,12 +22,17 @@ defmodule Magnetissimo.Parsers.Leetx do
       |> Floki.find(".pagging-box ul li.last a")
       |> Floki.attribute("href")
       |> Enum.at(0)
-    last_page_url = "https://1337x.to" <> last_page_url
 
-    0..50
-    |> Enum.map(fn i ->
-      String.replace(last_page_url, "/50/", "/#{i}/")
-    end)
+    case last_page_url do
+      nil -> []
+      page ->
+        last_page_url = "https://1337x.to" <> page
+
+        0..50
+        |> Enum.map(fn i ->
+          String.replace(last_page_url, "/50/", "/#{i}/")
+        end)
+    end
   end
 
   def torrent_links(html_body) do

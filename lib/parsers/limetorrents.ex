@@ -42,11 +42,11 @@ defmodule Magnetissimo.Parsers.Limetorrents do
       |> Floki.find(".dltorrent a")
       |> Floki.attribute("href")
       |> Enum.filter(fn(url) -> String.starts_with?(url, "magnet:") end)
-      |> Enum.at(0)
+      |> Enum.at(0, "")
 
     size_html = html_body
       |> Floki.find(".torrentinfo table tr td")
-      |> Enum.at(5)
+      |> Enum.at(5, "")
       |> Floki.text
     size_value = String.split(size_html) |> Enum.at(0)
     unit = String.split(size_html) |> Enum.at(1)

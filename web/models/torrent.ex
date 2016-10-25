@@ -30,6 +30,11 @@ defmodule Magnetissimo.Torrent do
     |> unique_constraint(:infohash)
   end
 
+  def with_infohash(hash) do
+    from t in Magnetissimo.Torrent,
+    where: t.infohash == ^hash
+  end
+
   def order_by_name(query) do
     from p in query,
     order_by: [asc: p.name]
@@ -50,20 +55,30 @@ defmodule Magnetissimo.Torrent do
     order_by: [desc: p.seeders]
   end
 
+  def save_torrent(%{filesize: "error"}=torrent), do: Logger.warn "Ignoring torrent:#{inspect torrent}"
+
+  def save_torrent(%{magnet: ""}=torrent), do: Logger.warn "Ignoring torrent:#{inspect torrent}"
+
+  def save_torrent(%{magnet: nil}=torrent), do: Logger.warn "Ignoring torrent:#{inspect torrent}"
+
   def save_torrent(torrent) do
-    #Logger.info "Got new torrent!!!! #{torrent.magnet}"
 
     magnet_position = :binary.match torrent.magnet, "magnet:?xt=urn:btih:"
     infohash = String.slice(torrent.magnet, magnet_position |> elem(1), 40)
 
-    changeset = Torrent.changeset(%Torrent{infohash: String.downcase(infohash)}, torrent)
-    case Repo.insert(changeset) do
-      {:ok, _torrent} ->
+    case Magnetissimo.Repo.all(Magnetissimo.Torrent.with_infohash(infohash)) do
+      [] ->
+        changeset = Torrent.changeset(%Torrent{infohash: String.downcase(infohash)}, torrent)
+        torrent = Repo.insert(changeset)
         Logger.info "★★★ - Torrent saved to database: #{torrent.name}"
-
-      {:error, changeset} ->
-        Logger.error "Couldn't save: #{torrent.name}"
-        IO.inspect changeset.errors
+      [torr] ->
+        changeset = Ecto.Changeset.change(torr, updated_at: Ecto.DateTime.utc)
+        Logger.debug "Updated update #{inspect Magnetissimo.Repo.update(changeset)} "
+      other ->
+        Logger.error "Couldn't save: #{inspect other} "
     end
+
   end
+
+
 end

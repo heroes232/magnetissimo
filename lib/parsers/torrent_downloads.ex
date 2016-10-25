@@ -142,10 +142,15 @@ defmodule Magnetissimo.Parsers.TorrentDownloads do
       |> Floki.find(".pagination_box a[title='2']")
       |> Floki.attribute("href")
       |> Enum.at(0)
-    page_url = "https://www.torrentdownloads.me" <> base_url
 
-    1..1000
-    |> Enum.map(fn i -> String.replace(page_url, "page=2", "page=#{i}") end)
+      case base_url do
+        nil -> []
+        url ->
+          page_url = "https://www.torrentdownloads.me" <> url
+
+          1..1000
+          |> Enum.map(fn i -> String.replace(page_url, "page=2", "page=#{i}") end)
+      end
   end
 
   def torrent_links(html_body) do

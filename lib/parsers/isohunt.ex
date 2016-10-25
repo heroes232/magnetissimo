@@ -19,18 +19,29 @@ defmodule Magnetissimo.Parsers.Isohunt do
     last_page_url = html_body
       |> Floki.find(".pagination .last a")
       |> Floki.attribute("href")
-      |> Enum.at(0)
+      |> Enum.at(0, "")
     last_page_url = "https://isohunt.to" <> last_page_url
-    uri = URI.parse(last_page_url)
-    query_params = URI.query_decoder(uri.query) |> Enum.to_list() |> Enum.into(%{})
-    {page, _} = Integer.parse(query_params["Torrent_page"])
-    total_pages = div(page, 40)
+    case URI.parse(last_page_url) do
+      nil -> []
+      uri ->
+        if uri.query != nil do
+          case URI.query_decoder(uri.query) do
+            nil -> []
+            query_params ->
+              query_params_list = query_params |> Enum.to_list() |> Enum.into(%{})
+              {page, _} = Integer.parse(query_params_list["Torrent_page"])
+              total_pages = div(page, 40)
 
-    0..total_pages
-    |> Enum.map(fn i -> i * 40 end)
-    |> Enum.map(fn i ->
-      String.replace(last_page_url, "Torrent_page=#{page}", "Torrent_page=#{i}")
-    end)
+              0..total_pages
+              |> Enum.map(fn i -> i * 40 end)
+              |> Enum.map(fn i ->
+                String.replace(last_page_url, "Torrent_page=#{page}", "Torrent_page=#{i}")
+            end)
+          end
+        else
+          []
+        end
+    end
   end
 
   def torrent_links(html_body) do
