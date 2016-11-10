@@ -62,22 +62,42 @@ defmodule Magnetissimo.Torrent do
   def save_torrent(%{magnet: nil}=torrent), do: Logger.warn "Ignoring torrent:#{inspect torrent}"
 
   def save_torrent(torrent) do
-
     magnet_position = :binary.match torrent.magnet, "magnet:?xt=urn:btih:"
     infohash = String.slice(torrent.magnet, magnet_position |> elem(1), 40)
 
-    case Magnetissimo.Repo.all(Magnetissimo.Torrent.with_infohash(infohash)) do
-      [] ->
-        changeset = Torrent.changeset(%Torrent{infohash: String.downcase(infohash)}, torrent)
-        torrent = Repo.insert(changeset)
-        Logger.info "★★★ - Torrent saved to database: #{torrent.name}"
-      [torr] ->
-        changeset = Ecto.Changeset.change(torr, updated_at: Ecto.DateTime.utc)
-        Logger.debug "Updated update #{inspect Magnetissimo.Repo.update(changeset)} "
-      other ->
-        Logger.error "Couldn't save: #{inspect other} "
+    Repo.transaction fn ->
+      case Magnetissimo.Repo.all(Magnetissimo.Torrent.with_infohash(infohash)) do
+        [] ->
+          changeset = Torrent.changeset(%Torrent{infohash: infohash}, torrent)
+          if changeset.valid?() do
+            case Repo.insert(changeset) do
+              {:ok, torrent} ->
+                Logger.info "★★★ - Torrent saved to database: #{inspect torrent}"
+              {:error, reason} ->
+                Logger.warn "Failed to save to database: reason:#{inspect reason.errors}"
+              other ->
+                Logger.error "Failed to save to database: other:#{inspect other}"
+            end
+          else
+            Logger.warn "Invalid changeset: #{inspect changeset}"
+          end
+        [torr] ->
+          update_existing(torr, torrent.source)
+        other ->
+          Logger.error "Couldn't save: #{inspect other} "
+      end
     end
 
+  end
+
+  def update_existing(torr, old_source) do
+    splitted = String.split(old_source, ",")
+    sources = [torr.source|splitted] |> Enum.uniq() |> Enum.sort()
+    source = Enum.join(sources, ",")
+    Logger.warn "update_existing #{inspect torr} #{torr.source} #{old_source} #{source}"
+
+    changeset = Ecto.Changeset.change(torr, updated_at: Ecto.DateTime.utc, source: source)
+    Logger.debug "Updated update #{inspect Magnetissimo.Repo.update(changeset)} "
   end
 
 

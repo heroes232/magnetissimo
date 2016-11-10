@@ -1,8 +1,6 @@
 defmodule Magnetissimo.Parsers.ThePirateBay do
   @behaviour Magnetissimo.Parser
 
-  require Logger
-
   def root_urls do
     [
       "https://thepiratebay.org/browse/100"
@@ -32,7 +30,8 @@ defmodule Magnetissimo.Parsers.ThePirateBay do
       |> Enum.filter(fn(url) -> String.starts_with?(url, "magnet:") end)
       |> Enum.at(0)
 
-    size = html_body
+    # TODO add unit or save size_value
+    size_value = html_body
       |> Floki.find("#detailsframe #details .col1 dd")
       |> Enum.at(2)
       |> Floki.text
@@ -52,25 +51,25 @@ defmodule Magnetissimo.Parsers.ThePirateBay do
       |> Floki.text
       |> Integer.parse
 
-      categories = html_body
-        |> Floki.find("#details > dl.col1 > dd")
-        |> Enum.at(0)
-        |> Floki.text
-        |> String.split(">")
+    categories = html_body
+      |> Floki.find("#details > dl.col1 > dd")
+      |> Enum.at(0)
+      |> Floki.text
+      |> String.split(">")
 
       category = List.first(categories) |> String.trim
       subcategory = List.last(categories) |> String.trim
 
-    %{
-      name: name,
-      magnet: magnet,
-      filesize: size,
-      source: "ThePirateBay",
-      seeders: seeders,
-      leechers: leechers,
-      category: category,
-      subcategory: subcategory
+      %{
+        name: name,
+        magnet: magnet,
+        filesize: size_value,
+        source: "ThePirateBay",
+        seeders: seeders,
+        leechers: leechers,
+        category: category,
+        subcategory: subcategory
 
-    }
+      }
   end
 end

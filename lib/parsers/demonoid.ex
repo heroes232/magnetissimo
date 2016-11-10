@@ -3,7 +3,7 @@ defmodule Magnetissimo.Parsers.Demonoid do
 
   def root_urls do
     [
-      "http://www.demonoid.pw/files/"
+      "https://www.dnoid.me/files"
     ]
   end
 
