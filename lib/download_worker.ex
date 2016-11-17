@@ -8,7 +8,7 @@ defmodule Magnetissimo.DownloadWorker do
   def download(url), do: Logger.debug "Ignoring #{url}"
 
   defp safe_download(url) do
-    case HTTPoison.get(url) do
+    case HTTPoison.get(url, [], [follow_redirect: true]) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, body}
       {:ok, %HTTPoison.Response{status_code: status}} ->
@@ -24,9 +24,9 @@ defmodule Magnetissimo.DownloadWorker do
     case download(url) do
       {:ok, body} ->
         Magnetissimo.Parsers.EZTV.paginated_links(body)
-      |> Enum.each(fn url ->
-        Exq.enqueue(Exq, "eztv", "Magnetissimo.DownloadWorker", [url, "eztv", "paginated_links"])
-      end)
+        |> Enum.each(fn url ->
+          Exq.enqueue(Exq, "eztv", "Magnetissimo.DownloadWorker", [url, "eztv", "paginated_links"])
+        end)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -37,9 +37,9 @@ defmodule Magnetissimo.DownloadWorker do
     case download(url) do
       {:ok, body} ->
         Magnetissimo.Parsers.EZTV.torrent_links(body)
-      |> Enum.each(fn url ->
-        Exq.enqueue(Exq, "eztv", "Magnetissimo.DownloadWorker", [url, "eztv", "torrent_links"])
-      end)
+        |> Enum.each(fn url ->
+          Exq.enqueue(Exq, "eztv", "Magnetissimo.DownloadWorker", [url, "eztv", "torrent_links"])
+        end)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -49,9 +49,12 @@ defmodule Magnetissimo.DownloadWorker do
     Logger.debug "Crawling: #{url}"
     case download(url) do
       {:ok, body} ->
-        torrent = Magnetissimo.Parsers.EZTV.scrape_torrent_information(body)
-        Logger.debug inspect torrent
-        Torrent.save_torrent(torrent)
+        case Magnetissimo.Parsers.EZTV.scrape_torrent_information(body) do
+          {:ok, torrent} ->
+            Logger.debug inspect torrent
+            Torrent.save_torrent(torrent)
+          _ -> nil
+        end
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -117,9 +120,9 @@ defmodule Magnetissimo.DownloadWorker do
     case download(url) do
       {:ok, body} ->
         Magnetissimo.Parsers.ThePirateBay.torrent_links(body)
-      |> Enum.each(fn url ->
-        Exq.enqueue(Exq, "thepiratebay", "Magnetissimo.DownloadWorker", [url, "thepiratebay", "torrent_links"])
-      end)
+        |> Enum.each(fn url ->
+          Exq.enqueue(Exq, "thepiratebay", "Magnetissimo.DownloadWorker", [url, "thepiratebay", "torrent_links"])
+        end)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -142,11 +145,11 @@ defmodule Magnetissimo.DownloadWorker do
     Logger.debug "Crawling: #{url}"
     case download(url) do
       {:ok, body} ->
-        pages = Magnetissimo.Parsers.Demonoid.paginated_links(body)
-        pages
-      |> Enum.each(fn url ->
-        Exq.enqueue(Exq, "demonoid", "Magnetissimo.DownloadWorker", [url, "demonoid", "paginated_links"])
-      end)
+        Magnetissimo.Parsers.Demonoid.paginated_links(body)
+        |> Enum.each(fn url ->
+          Logger.debug url
+          Exq.enqueue(Exq, "demonoid", "Magnetissimo.DownloadWorker", [url, "demonoid", "paginated_links"])
+        end)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -183,11 +186,10 @@ defmodule Magnetissimo.DownloadWorker do
     Logger.debug "Crawling: #{url}"
     case download(url) do
       {:ok, body} ->
-        pages = Magnetissimo.Parsers.Isohunt.paginated_links(body)
-        pages
-      |> Enum.each(fn url ->
-        Exq.enqueue(Exq, "isohunt", "Magnetissimo.DownloadWorker", [url, "isohunt", "paginated_links"])
-      end)
+        Magnetissimo.Parsers.Isohunt.paginated_links(body)
+        |> Enum.each(fn url ->
+          Exq.enqueue(Exq, "isohunt", "Magnetissimo.DownloadWorker", [url, "isohunt", "paginated_links"])
+        end)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -197,11 +199,10 @@ defmodule Magnetissimo.DownloadWorker do
     Logger.debug "Crawling: #{url}"
     case download(url) do
       {:ok, body} ->
-        torrent_links = Magnetissimo.Parsers.Isohunt.torrent_links(body)
-        torrent_links
-      |> Enum.each(fn url ->
-        Exq.enqueue(Exq, "isohunt", "Magnetissimo.DownloadWorker", [url, "isohunt", "torrent_links"])
-      end)
+        Magnetissimo.Parsers.Isohunt.torrent_links(body)
+        |> Enum.each(fn url ->
+          Exq.enqueue(Exq, "isohunt", "Magnetissimo.DownloadWorker", [url, "isohunt", "torrent_links"])
+        end)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -265,11 +266,10 @@ defmodule Magnetissimo.DownloadWorker do
     Logger.debug "Crawling: #{url}"
     case download(url) do
       {:ok, body} ->
-        pages = Magnetissimo.Parsers.TorrentDownloads.paginated_links(body)
-        pages
-      |> Enum.each(fn url ->
-        Exq.enqueue(Exq, "torrentdownloads", "Magnetissimo.DownloadWorker", [url, "torrentdownloads", "paginated_links"])
-      end)
+        Magnetissimo.Parsers.TorrentDownloads.paginated_links(body)
+        |> Enum.each(fn url ->
+          Exq.enqueue(Exq, "torrentdownloads", "Magnetissimo.DownloadWorker", [url, "torrentdownloads", "paginated_links"])
+        end)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
@@ -279,25 +279,27 @@ defmodule Magnetissimo.DownloadWorker do
     Logger.debug "Crawling: #{url}"
     case download(url) do
       {:ok, body} ->
-        torrent_links = Magnetissimo.Parsers.TorrentDownloads.torrent_links(body)
-        torrent_links
-      |> Enum.each(fn url ->
-        Exq.enqueue(Exq, "torrentdownloads", "Magnetissimo.DownloadWorker", [url, "torrentdownloads", "torrent_links"])
-      end)
+        Magnetissimo.Parsers.TorrentDownloads.torrent_links(body)
+        |> Enum.each(fn url ->
+          Exq.enqueue(Exq, "torrentdownloads", "Magnetissimo.DownloadWorker", [url, "torrentdownloads", "torrent_links"])
+        end)
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
   end
 
   def perform(url, "torrentdownloads", "torrent_links") do
-    Logger.debug "Crawling: #{url}"
+    Logger.debug "Crawling: torrent_links #{url}"
     case download(url) do
       {:ok, body} ->
-        torrent = Magnetissimo.Parsers.TorrentDownloads.scrape_torrent_information(body)
-        Logger.debug inspect torrent
-        Torrent.save_torrent(torrent)
+        case Magnetissimo.Parsers.TorrentDownloads.scrape_torrent_information(body) do
+          torrent when is_map(torrent) ->
+            Torrent.save_torrent(torrent)
+          _ -> nil
+        end
       {:error, reason} ->
         Logger.info "Failed downloading url:#{url} reason:#{reason}"
     end
   end
+
 end

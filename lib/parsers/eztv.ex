@@ -64,17 +64,26 @@ defmodule Magnetissimo.Parsers.EZTV do
       |> String.trim
       |> Integer.parse
 
-    size = Magnetissimo.SizeConverter.size_to_bytes(size_value, unit) |> Kernel.to_string
+    size = Magnetissimo.SizeConverter.size_to_bytes(size_value, unit)
+    case size do
+      size_value when is_integer(size_value) ->
+        create_torrent(size_value, magnet, seeders, leechers, name)
+      _ -> nil
+    end
 
+  end
 
-    %{
+  defp create_torrent(size, magnet, seeders, leechers, name) do
+    size_value = size |> Kernel.to_string
+
+    {:ok, %{
       name: name,
       magnet: magnet,
       source: "EZTV",
-      filesize: size,
+      filesize: size_value,
       seeders: seeders,
       leechers: leechers,
       category: "TV Show"
-    }
+    }}
   end
 end
