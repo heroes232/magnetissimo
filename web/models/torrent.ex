@@ -91,12 +91,13 @@ defmodule Magnetissimo.Torrent do
   end
 
   def update_existing(torr, old_source) do
-    splitted = String.split(old_source, ",")
-    sources = [torr.source|splitted] |> Enum.uniq() |> Enum.sort()
-    source = Enum.join(sources, ",")
+    old_source_torrents = old_source |> String.split(",")
+    current_source_torrents = torr.source |> String.split(",")
+    sources = (old_source_torrents ++ current_source_torrents) |> Enum.uniq() |> Enum.sort()
+    new_source = Enum.join(sources, ",")
     Logger.warn "update_existing #{inspect torr} #{torr.source} #{old_source} #{source}"
 
-    changeset = Ecto.Changeset.change(torr, updated_at: Ecto.DateTime.utc, source: source)
+    changeset = Ecto.Changeset.change(torr, updated_at: Ecto.DateTime.utc, source: new_source)
     Logger.debug "Updated update #{inspect Magnetissimo.Repo.update(changeset)} "
   end
 
