@@ -11,13 +11,13 @@ Goals:
 * High performance, leveraging Elixir's GenServer and Erlang's BEAM VM.
 * Unit tested for correctness.
 
-# Community
+## Community
 
 Want to talk about Magnetissimo or suggest features? We have an official subreddit!
 
 [http://reddit.com/r/magnetissimo](http://reddit.com/r/magnetissimo)
 
-# Parser List
+## Parser List
 
 Magnetissimo currently fetches torrents from the following sites:
 
@@ -46,10 +46,25 @@ Magnetissimo currently fetches torrents from the following sites:
 - [ ] torrents.net
 - [ ] yourbittorrent.com
 
-# Usage Guide
+## Usage Guide
 
 Please check the Wiki pages for instructions on how to run Magnetissimo.
 
 * [Running it locally](https://github.com/sergiotapia/magnetissimo/wiki/Usage:-Local)
 * [Running it on Heroku](https://github.com/sergiotapia/magnetissimo/wiki/Usage:-Heroku)
 * Running it on a VPS (to-do)
+
+## Available endpoints
+
+### GET / Search page
+
+This endpoint serves an HTML page that supports searching through available torrents that have been fetched from torrent websites.
+
+### GET /summary
+
+This endpoint shows a summary of the data in the database, essentially, a tally of how many torrents exist in the DB per torrent website.
+
+### GET /exqui
+
+This endpoint is served by the ExqUI library (similar to Sidekiq's Web UI), shows currently running Exq workers, enqueued and canceled.
+Requires that ```mix exq.ui``` is running.
