@@ -68,3 +68,7 @@ This endpoint shows a summary of the data in the database, essentially, a tally 
 
 This endpoint is served by the ExqUI library (similar to Sidekiq's Web UI), shows currently running Exq workers, enqueued and canceled.
 Requires that ```mix exq.ui``` is running.
+
+
+
+-(https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
