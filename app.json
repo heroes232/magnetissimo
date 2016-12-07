@@ -1,0 +1,7 @@
+{
+  "name": "magnetissimo",
+  "description": "Torrent search",
+  "repository": "https://github.com/heroes232/magnetissimo.git",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["node", "express", "static"]
+}
